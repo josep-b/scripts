@@ -1,0 +1,38 @@
+---
+- name: Install GeoIPupdate
+  hosts: all
+  become: true
+
+  vars:
+    geoipupdate_version: 4.11.1
+    geoipupdate_license_key: 
+    geoipupdate_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key={{ geoipupdate_license_key }}&suffix=tar.gz"
+    geoipupdate_dest: /tmp/geoipupdate.tar.gz
+    geoipupdate_tmpdir: /tmp/geoipupdate
+
+  tasks:
+    - name: Download GeoIPupdate archive
+      get_url:
+        url: "{{ geoipupdate_url }}"
+        dest: "{{ geoipupdate_dest }}"
+
+    - name: Extract GeoIPupdate archive
+      unarchive:
+        src: "{{ geoipupdate_dest }}"
+        dest: "{{ geoipupdate_tmpdir }}"
+        remote_src: yes
+        extra_opts: ["--strip-components=1"]
+
+    - name: Install GeoIPupdate binary
+      copy:
+        src: "{{ geoipupdate_tmpdir }}/geoipupdate_{{ geoipupdate_version }}/geoipupdate"
+        dest: /usr/local/bin/geoipupdate
+        mode: '0755'
+
+    - name: Clean up temporary files
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ geoipupdate_dest }}"
+        - "{{ geoipupdate_tmpdir }}"
