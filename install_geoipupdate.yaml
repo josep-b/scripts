@@ -22,12 +22,23 @@
         dest: "{{ geoipupdate_tmpdir }}"
         remote_src: yes
         extra_opts: ["--strip-components=1"]
+      register: result
+
+    - name: Check if extraction was successful
+      fail:
+        msg: "GeoIPupdate extraction failed"
+      when: result is failed
 
     - name: Install GeoIPupdate binary
       copy:
         src: "{{ geoipupdate_tmpdir }}/geoipupdate_{{ geoipupdate_version }}/geoipupdate"
         dest: /usr/local/bin/geoipupdate
         mode: '0755'
+
+    - name: Check if binary was installed
+      fail:
+        msg: "GeoIPupdate binary not found in /usr/local/bin"
+      when: not (ansible_check_mode or ('/usr/local/bin/geoipupdate' | realpath in ansible_check_files))
 
     - name: Clean up temporary files
       file:
@@ -36,3 +47,4 @@
       with_items:
         - "{{ geoipupdate_dest }}"
         - "{{ geoipupdate_tmpdir }}"
+
