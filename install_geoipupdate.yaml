@@ -52,3 +52,6 @@
 # getting this error
 # fatal: [localhost]: FAILED! => {"changed": false, "checksum_dest": null, "checksum_src": "317245a897bb12f9c36a45855b3723dc89bb5cea", "dest": "/home/ec2-user/tmp/geoipupdate.tar.gz", "elapsed": 0, "msg": "Destination /home/ec2-user/tmp does not exist", "src": "/root/.ansible/tmp/ansible-tmp-1683227499.270181-111238-172516985720805/tmprmfeqc8c", "url": "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=RQUOwRIu7vwS5i98&suffix=tar.gz"}
 
+An exception occurred during task execution. To see the full traceback, use -vvv. The error was: If you are using a module and expect the file to exist on the remote, see the remote_src option
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Could not find or access '/home/ec2-user/tmp/geoipupdate/geoipupdate_4.11.1/geoipupdate' on the Ansible Controller.\nIf you are using a module and expect the file to exist on the remote, see the remote_src option"}
+
