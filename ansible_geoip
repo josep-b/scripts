@@ -1,1 +1,50 @@
+---
+- name: Install GeoIPupdate locally
+  hosts: localhost
+  connection: local
+  become: true
 
+  vars:
+    geoipupdate_version: 4.11.1
+    geoipupdate_license_key: RQUOwRIu7vwS5i98
+    geoipupdate_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key={{ geoipupdate_license_key }}&suffix=tar.gz"
+    geoipupdate_dest: /home/ec2-user/tmp/geoipupdate.tar.gz
+    geoipupdate_tmpdir: /home/ec2-user/tmp/geoipupdate
+  tasks:
+    - name: Download GeoIPupdate archive
+      get_url:
+        url: "{{ geoipupdate_url }}"
+        dest: "{{ geoipupdate_dest }}"
+
+    - name: Extract GeoIPupdate archive
+      unarchive:
+        src: "{{ geoipupdate_dest }}"
+        dest: "{{ geoipupdate_tmpdir }}"
+        remote_src: yes
+        extra_opts: ["--strip-components=1"]
+      register: result
+
+    - name: Check if extraction was successful
+      fail:
+        msg: "GeoIPupdate extraction failed"
+      when: result is failed
+
+    - name: Install GeoIPupdate binary
+      copy:
+        src: "/home/ec2-user/tmp/geoipupdate/geoipupdate_{{ geoipupdate_version }}/geoipupdate"
+        dest: /usr/local/bin/geoipupdate
+        mode: '0755'
+
+    - name: Check if binary was installed
+      fail:
+        msg: "GeoIPupdate binary not found in /usr/local/bin"
+      when: not (ansible_check_mode or ('/usr/local/bin/geoipupdate' | realpath in ansible_check_files))
+
+    - name: Clean up temporary files
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ geoipupdate_dest }}"
+        - "{{ geoipupdate_tmpdir }}"
+  
