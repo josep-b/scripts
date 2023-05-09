@@ -26,3 +26,8 @@ def get_instance_owner(instance):
         if tag['Key'] == 'Owner':
             return tag['Value']
     return 'N/A'
+
+
+# command for instance
+
+aws ec2 describe-instances --query 'Reservations[].Instances[].{InstanceID:InstanceId, Owner:Tags[?Key==`Owner`].Value | [0]}' --output table > instances.txt
