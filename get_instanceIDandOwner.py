@@ -29,5 +29,7 @@ def get_instance_owner(instance):
 
 
 # command for instance
-
 aws ec2 describe-instances --query 'Reservations[].Instances[].{InstanceID:InstanceId, Owner:Tags[?Key==`Owner`].Value | [0]}' --output table > instances.txt
+
+# Running this command will output a table with the columns InstanceID, Name, and Owner, and the results will be saved in the instances.txt file.
+aws ec2 describe-instances --query 'Reservations[].Instances[].{InstanceID:InstanceId, Name:Tags[?Key==`Name`].Value | [0], Owner:Tags[?Key==`Owner`].Value | [0]}' --output table > instances.txt
