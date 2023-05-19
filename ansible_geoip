@@ -6,7 +6,7 @@
 
   vars:
     geoipupdate_version: 4.11.1
-    geoipupdate_license_key: RQUOwRIu7vwS5i98
+    geoipupdate_license_key: 
     geoipupdate_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key={{ geoipupdate_license_key }}&suffix=tar.gz"
     geoipupdate_dest: /home/ec2-user/tmp/geoipupdate.tar.gz
     geoipupdate_tmpdir: /home/ec2-user/tmp/geoipupdate
